@@ -130,3 +130,5 @@ while True:
 	write_to_lcd(lcd, framebuffer, lcd_cols)
 
 	scroll_if_needed(lcd, framebuffer, lcd_cols)
+	
+	time.sleep(10) #give the PI a break

@@ -24,13 +24,26 @@ chrome_options.add_argument("--disable-dev-sh-usage")
 chrome_options.add_argument("--headless")
 driver = webdriver.Chrome(options=chrome_options)
 
-def update_framebuffer(var, index, identifier):
-	if (identifier == show_time):
+def get_time():
+	return "Tijd: %s" %time.strftime("%H:%M")
+
+def get_date():
+	return "Datum: %s" %time.strftime("%d/%m/%Y")
+
+framebuffer = [
+	"*PROGRAMMA*",
+	"*PROGRAMMAMAKER*",
+	get_time(),
+	get_date()
+]
+
+def update_framebuffer(framebuffer, var, index, identifier):
+	if (identifier == "show_time" and hasattr(var, "text")):
 		framebuffer[index] = framebuffer[index] + " - " + show_time.text.split("-")[0].strip() + "-" + show_time.text.split("-")[1].strip()
 	elif (hasattr(var, "text")):
 		framebuffer[index] = var.text.strip()
 	elif (index >= 2):
-		get_volumio_track_or_artist_name(index)	
+		framebuffer = get_volumio_track_or_artist_name(index)
 
 def write_to_lcd(lcd, framebuffer, num_cols):
     #Write the frambuffer to specified LCD
@@ -89,12 +102,6 @@ def get_volumio_status():
 		status = json.loads(output.stdout)
 		return status
 
-def get_time():
-	return "Tijd: %s" %time.strftime("%H:%M")
-
-def get_date():
-	return "Datum: %s" %time.strftime("%d/%m/%Y")
-
 while True:
 	content = ""
 	try:
@@ -114,18 +121,11 @@ while True:
 	track_name = soup.find("div", class_="player-metadata__track__track-name")
 	artist_name = soup.find("div", class_="player-metadata__track__artist-name")
 
-	framebuffer = [
-		"*PROGRAMMA*",
-		"*PROGRAMMAMAKER*",
-		get_time(),
-		get_date()
-	]
-
-	update_framebuffer(show_name, 0)
-	update_framebuffer(show_time, 0, "show_time")
-	update_framebuffer(show_host, 1)
-	update_framebuffer(track_name, 2)
-	update_framebuffer(artist_name, 3)
+	update_framebuffer(framebuffer, show_name, 0, "")
+	update_framebuffer(framebuffer, show_time, 0, "show_time")
+	update_framebuffer(framebuffer, show_host, 1, "")
+	update_framebuffer(framebuffer, track_name, 2, "")
+	update_framebuffer(framebuffer, artist_name, 3, "")
 
 	write_to_lcd(lcd, framebuffer, lcd_cols)
 

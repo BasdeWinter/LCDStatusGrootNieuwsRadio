@@ -52,9 +52,9 @@ def get_volumio_track_name():
 		if (len(status["title"].split(" - ")) > 0):
 			return status["title"].split(" - ")[0]			  
 		else:			
-			return "Tijd: %s" %time.strftime("%H:%M") 
+			return get_time()
 	else: 		  
-		return "Tijd: %s" %time.strftime("%H:%M") 
+		return get_time()
 
 def get_volumio_artist_name():
 	status = get_volumio_status()
@@ -62,9 +62,9 @@ def get_volumio_artist_name():
 		if (len(status["title"].split(" - ") ) == 2):			
 			return status["title"].split(" - ")[1]
 		else:
-			return "Datum: %s" %time.strftime("%d/%m/%Y")
+			return get_date()
 	else:
-		return "Datum: %s" %time.strftime("%d/%m/%Y")
+		return get_date()
 	
 def get_volumio_status():
 	#set the value of status to the output of the volumio status command
@@ -74,6 +74,12 @@ def get_volumio_status():
 	else:
 		status = json.loads(output.stdout)
 		return status
+
+def get_time():
+	return "Tijd: %s" %time.strftime("%H:%M")
+
+def get_date():
+	return "Datum: %s" %time.strftime("%d/%m/%Y")
 
 while True:
 	content = ""
@@ -97,8 +103,8 @@ while True:
 	framebuffer = [
 		"*PROGRAMMA*",
 		"*PROGRAMMAMAKER*",
-		"Tijd: %s" %time.strftime("%H:%M"),
-		"Datum: %s" %time.strftime("%d/%m/%Y")
+		get_time(),
+		get_date()
 	]
 
 	if hasattr(show_name, "text"):

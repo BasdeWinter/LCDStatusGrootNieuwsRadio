@@ -23,7 +23,15 @@ chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-sh-usage")
 chrome_options.add_argument("--headless")
 driver = webdriver.Chrome(options=chrome_options)
-    
+
+def update_framebuffer(var, index, identifier):
+	if (identifier == show_time):
+		framebuffer[index] = framebuffer[index] + " - " + show_time.text.split("-")[0].strip() + "-" + show_time.text.split("-")[1].strip()
+	elif (hasattr(var, "text")):
+		framebuffer[index] = var.text.strip()
+	elif (index >= 2):
+		get_volumio_track_or_artist_name(index)	
+
 def write_to_lcd(lcd, framebuffer, num_cols):
     #Write the frambuffer to specified LCD
     lcd.home()
@@ -45,6 +53,12 @@ def scroll_if_needed(lcd, framebuffer, num_cols):
     for row in framebuffer:
         if len(row) > num_cols:
             loop_string(row, lcd, framebuffer, framebuffer.index(row), num_cols)
+
+def get_volumio_track_or_artist_name(index):
+	if (index == 2):
+		return get_volumio_track_name()
+	if (index == 3):
+		return get_volumio_artist_name()		
              
 def get_volumio_track_name():
 	status = get_volumio_status()
@@ -107,20 +121,11 @@ while True:
 		get_date()
 	]
 
-	if hasattr(show_name, "text"):
-		framebuffer[0] = show_name.text.strip()
-	if hasattr(show_time, "text"):
-		framebuffer[0] = framebuffer[0] + " - " + show_time.text.split("-")[0].strip() + "-" + show_time.text.split("-")[1].strip()
-	if hasattr(show_host, "text"):
-		framebuffer[1] = show_host.text.strip()
-	if hasattr(track_name, "text"):
-		framebuffer[2] = track_name.text.strip()
-	else:
-		framebuffer[2] = get_volumio_track_name()    
-	if hasattr(artist_name, "text"):
-		framebuffer[3] = artist_name.text.strip()
-	else:
-		framebuffer[3] = get_volumio_artist_name()
+	update_framebuffer(show_name, 0)
+	update_framebuffer(show_time, 0, "show_time")
+	update_framebuffer(show_host, 1)
+	update_framebuffer(track_name, 2)
+	update_framebuffer(artist_name, 3)
 
 	write_to_lcd(lcd, framebuffer, lcd_cols)
 

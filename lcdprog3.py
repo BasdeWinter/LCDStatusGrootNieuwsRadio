@@ -19,9 +19,9 @@ lcd.clear()
 chromedriver = "/usr/lib/chromium-browser/chromedriver"
 os.environ["webdriver.chrome.driver"] = chromedriver
 chrome_options = Options()
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-sh-usage')
-chrome_options.add_argument('--headless')
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-sh-usage")
+chrome_options.add_argument("--headless")
 driver = webdriver.Chrome(options=chrome_options)
     
 def write_to_lcd(lcd, framebuffer, num_cols):
@@ -29,7 +29,7 @@ def write_to_lcd(lcd, framebuffer, num_cols):
     lcd.home()
     for row in framebuffer:
         lcd.write_string(row.ljust(num_cols)[:num_cols])
-        lcd.write_string('\r\n')
+        lcd.write_string("\r\n")
  
 def loop_string(string, lcd, framebuffer, row, num_cols, delay=0.2):
     padding = ' ' * num_cols
@@ -78,7 +78,7 @@ def get_volumio_status():
 while True:
 	content = ""
 	try:
-		driver.get('https://player.grootnieuwsradio.nl/')
+		driver.get("https://player.grootnieuwsradio.nl/")
 		#give enough time for the song request to be completed and rendered by javascript
 		time.sleep(6)
 		content = driver.page_source
@@ -86,32 +86,32 @@ while True:
 		#an exception occurred with selenium, try again in 30sec
 		time.sleep(30)
 
-	soup = BeautifulSoup(content, 'html.parser')
+	soup = BeautifulSoup(content, "html.parser")
 
-	show_name = soup.find('div', class_='show__info__name')
-	show_time = soup.find('div', class_='show__info__time')
-	show_host = soup.find('div', class_='show__info__host-name')
-	track_name = soup.find('div', class_='player-metadata__track__track-name')
-	artist_name = soup.find('div', class_='player-metadata__track__artist-name')
+	show_name = soup.find("div", class_="show__info__name")
+	show_time = soup.find("div", class_="show__info__time")
+	show_host = soup.find("div", class_="show__info__host-name")
+	track_name = soup.find("div", class_="player-metadata__track__track-name")
+	artist_name = soup.find("div", class_="player-metadata__track__artist-name")
 
 	framebuffer = [
-		'*PROGRAMMA*',
-		'*PROGRAMMAMAKER*',
+		"*PROGRAMMA*",
+		"*PROGRAMMAMAKER*",
 		"Tijd: %s" %time.strftime("%H:%M"),
 		"Datum: %s" %time.strftime("%d/%m/%Y")
 	]
 
-	if hasattr(show_name, 'text'):
+	if hasattr(show_name, "text"):
 		framebuffer[0] = show_name.text.strip()
-	if hasattr(show_time, 'text'):
+	if hasattr(show_time, "text"):
 		framebuffer[0] = framebuffer[0] + " - " + show_time.text.split("-")[0].strip() + "-" + show_time.text.split("-")[1].strip()
-	if hasattr(show_host, 'text'):
+	if hasattr(show_host, "text"):
 		framebuffer[1] = show_host.text.strip()
-	if hasattr(track_name, 'text'):
+	if hasattr(track_name, "text"):
 		framebuffer[2] = track_name.text.strip()
 	else:
 		framebuffer[2] = get_volumio_track_name()    
-	if hasattr(artist_name, 'text'):
+	if hasattr(artist_name, "text"):
 		framebuffer[3] = artist_name.text.strip()
 	else:
 		framebuffer[3] = get_volumio_artist_name()

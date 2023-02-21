@@ -6,11 +6,17 @@ Falls back on "volumio status" for track and artist name if not available on the
 Uses the Dutch language but this can be changed easily
 
 requires:
+
 sudo apt-get install python3-RPI.GPIO
+
 sudo apt-get install python3-bs4
+
 sudo pip install RPLCD
+
 (/usr/bin/python3 -m pip install RPLCD)
+
 sudo apt-get install python3-selenium
+
 sudo apt-get install chromium-driver
 
 
